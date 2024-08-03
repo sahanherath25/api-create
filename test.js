@@ -5,7 +5,5 @@ const currentObj = {
   difficulty: 'easy'
 };
 
-const newObj=Object.assign({id:1997},currentObj);
-
-
+const newObj = Object.assign({ id: 1997 }, currentObj);
 console.log(newObj);

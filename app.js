@@ -1,141 +1,63 @@
 const express=require("express");
-const fs=require("fs");
+const morgan=require("morgan");
 const app=express();
 
-const port=3000;
 
-//TODO Adding a Middleware -A function that can modify the incoming Request
-//TODO REQUEST <===========> MIDDLEWARE <===========> RESPONSE
+
 app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
 
-
-//TODO Reading tours.json file Async
-//JSON.parse() will convert Array of JSON object to Regular Javascript Array of Object
-const tours=JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`,"utf-8"));
-
-const getAllTours=(req, res)=>{
-  res.status(200).json({
-    status:"success",
-    statusCode:200,
-    results:tours.length,
-    data:{
-      tours
-    },
-  })
-}
-
-const getTour=(req, res)=>{
-
-  //TODO Using params we have acess to all the parameters  we define :variable
-  const id=parseInt(req.params.id);
-  const tour=tours.find((item)=>{
-    return item.id===id;
-  })
-
-  if(id > tours.length){
-    res.status(404).json({
-      status:"fail",
-      message:"Invalid ID"
-    })
-  }
-
-  if(tour){
-    res.status(200).json({
-      status:"success",
-      responseTime:req.responseTime,
-      statusCode:200,
-      data:{
-        tour
-      },
-    })
-  }
-}
-
-const createTour=(req, res)=>{
-// Need a Middleware
-  console.log("BoDY",req.body);
-
-  const newID=tours[tours.length-1].id+1;
-  const newTour=Object.assign({id:newID},req.body)
-  tours.push(newTour);
-
-  fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`,JSON.stringify(tours),(err)=>{
-
-  })
-
-  res.status(201).json({
-    message:"success",
-    data:{
-      tour:newTour
-    }
-  });
-
-}
-
-const updateTour=(req, res)=>{
-
-
-  if(req.params.id*1>tours.length){
-    res.status(404).json({
-      status:"fail",
-      message:"Invalid ID"
-    })
-  }
-
-  res.status(200).json({
-    status:"success",
-    data:{
-      tour:"Updated Tour "
-    }
-  })
-}
-
-const deleteTour=(req, res)=>{
-
-
-  if(req.params.id*1>tours.length){
-    res.status(404).json({
-      status:"fail",
-      message:"Invalid ID"
-    })
-  }
-
-  res.status(204).json({
-    status:"success",
-    data:null
-  })
+if(process.env.NODE_ENV==="development"){
+  //TODO If environemnt is development then use morgan
+  app.use(morgan('dev'))
 }
 
 
-// app.get("/api/v1/tours",getAllTours);
-// app.post("/api/v1/tours",createTour)
-app.use((req, res, next)=>{
-  console.log("My Created Middleware 💫❤")
-  req.responseTime=new Date().toISOString();
-  next()
+
+//TODO Importing Routers
+const tourRouter=require("./routes/tourRoutes")
+const userRouter=require("./routes/userRoutes")
+const AppError = require('./utils/appError');
+
+const globalErrorHandler=require("./controllers/errorControllers")
+
+
+
+//TODO Mounting Routers
+app.use("/api/v1/tours",tourRouter);
+app.use("/api/v1/users",userRouter);
+
+
+
+app.all("*",(req, res, next)=>{
+  // res.status(404).json({
+  //   status:"Failed",
+  //   message:`Path Could Not Find ${req.originalUrl} on our server`,
+  // })
+
+  // const error=new Error(`Path Could Not Find ${req.originalUrl} on our server\``)
+  // error.status="Fail"
+  // error.statusCode=401
+
+
+  next(new AppError(`Path Could Not Find ${req.originalUrl} on our server`,401))
+
 })
 
 
-app.route("/api/v1/tours").get(getAllTours).post(createTour)
+app.use(globalErrorHandler)
+
+module.exports=app
 
 
-//Sending HTTP Post Request to add new Data
-//TODO  PUT  - expect to update the entire object
-//TODO PATCH - expect to Only update the properties of current object
+//Cluster Logins
+// pwd=6kCZluNRUDihAxjU
+// userName=sahanherath555
 
-// app.get("/api/v1/tours/:id",getTour)
-// app.patch("/api/v1/tours/:id",updateTour)
-// app.delete("/api/v1/tours/:id",deleteTour)
+//URL -mongodb+srv://sahanherath555:6kCZluNRUDihAxjU@cluster0.5pfwjyr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
-app.route("/api/v1/tours/:id").patch(updateTour).delete(deleteTour).get(getTour)
+//string=mongodb+srv://sahanherath555:<password>@cluster0.5pfwjyr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
+//DATABASE=mongodb+srv://sahanherath555:6kCZluNRUDihAxjU@cluster0.5pfwjyr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
-
-
-
-
-
-
-app.listen(port,()=>{
-  console.log(`Listening to port ${port}`);
-})
+//mongodb+srv://sahanherath555:6kCZluNRUDihAxjU@cluster0.5pfwjyr.mongodb.net/natours/?retryWrites=true&w=majority&appName=Cluster0

@@ -205,47 +205,5 @@
       "2022-01-16,10:00",
       "2022-12-12,10:00"
     ]
-  },
-  {
-    "id": 9,
-    "name": "TEST TOUR",
-    "duration": 25,
-    "maxGroupSize": 30,
-    "difficulty": "easy"
-  },
-  {
-    "id": 10,
-    "name": "TEST TOUR 2",
-    "duration": 48,
-    "maxGroupSize": 30,
-    "difficulty": "hard"
-  },
-  {
-    "id": 11,
-    "name": "Switzerland",
-    "duration": 365,
-    "maxGroupSize": 1,
-    "difficulty": "complex"
-  },
-  {
-    "id": 12,
-    "name": "Bahai",
-    "duration": 12,
-    "maxGroupSize": 25,
-    "difficulty": "easy"
-  },
-  {
-    "id": 13,
-    "name": "Bahai",
-    "duration": 12,
-    "maxGroupSize": 25,
-    "difficulty": "easy"
-  },
-  {
-    "id": 14,
-    "name": "Bahai",
-    "duration": 152,
-    "maxGroupSize": 25,
-    "difficulty": "easy"
   }
 ]
