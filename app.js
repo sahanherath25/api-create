@@ -7,6 +7,12 @@ const app=express();
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
+app.use((req, res, next)=>{
+  // TODO Handling Uncaught Exceptions
+  console.log(sahan);
+})
+
+
 if(process.env.NODE_ENV==="development"){
   //TODO If environemnt is development then use morgan
   app.use(morgan('dev'))

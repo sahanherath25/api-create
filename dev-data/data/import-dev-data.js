@@ -14,8 +14,6 @@ mongoose.connect(DB,{
 
 }).then(()=>{
   console.log("Connected TO DB Sucessfully");
-}).catch((e)=>{
-  console.log("ERROR",e);
 })
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
@@ -53,4 +51,5 @@ if(process.argv[2]==="--import"){
 }else if (process.argv[2]==="--delete") {
   deleteData()
 }
+
 

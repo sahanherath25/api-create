@@ -56,3 +56,4 @@ module.exports={
   updateUser,
   deleteUser
 }
+
