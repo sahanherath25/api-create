@@ -1,16 +1,18 @@
 const express=require("express");
 const morgan=require("morgan");
+const cors = require('cors');
 const app=express();
 
 
-
+// Use CORS middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
-app.use((req, res, next)=>{
-  // TODO Handling Uncaught Exceptions
-  console.log(sahan);
-})
+// app.use((req, res, next)=>{
+//   // TODO Handling Uncaught Exceptions
+//   console.log(sahan);
+// })
 
 
 if(process.env.NODE_ENV==="development"){
@@ -38,7 +40,6 @@ app.all("*",(req, res, next)=>{
   // const error=new Error(`Path Could Not Find ${req.originalUrl} on our server\``)
   // error.status="Fail"
   // error.statusCode=401
-
 
   next(new AppError(`Path Could Not Find ${req.originalUrl} on our server`,401))
 

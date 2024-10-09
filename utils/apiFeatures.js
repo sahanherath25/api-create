@@ -46,7 +46,7 @@ class APIFeatures {
     console.log(this.queryString.fields);
 
     if (this.queryString.fields) {
-      const sortByFields = this.queryString.fields.split(',').join('');
+      const sortByFields = this.queryString.fields.split(',').join(' ');
       console.log('Fields ', sortByFields);
 
       //TODO To do that here MongoDB expect string like ' name duration difficulty price '

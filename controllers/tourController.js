@@ -33,7 +33,7 @@ exports.aliasToTour = async (req, res, next) => {
 
 exports.getAllTours = catchAsync(async (req, res,next) => {
 
-  console.log('Params ', req.query);
+  // console.log('Params ', req.query);
   // const tour=await Tour.find()
   //   .where("duration").equals(5)
   //   .where("difficulty").equals("easy")
@@ -143,6 +143,7 @@ exports.getTour = catchAsync(async (req, res,next) => {
     data: {
       tour
     }
+
   });
 
 
@@ -200,6 +201,8 @@ exports.updateTour = catchAsync(async (req, res,next) => {
     runValidators: true
   });
 
+
+
   res.status(200).json({
     message: 'success',
     data: {
@@ -207,11 +210,17 @@ exports.updateTour = catchAsync(async (req, res,next) => {
     }
   });
 
+
+
 });
 
 exports.deleteTour =catchAsync( async (req, res,next) => {
 
+  console.log("RESPOINSED RECEIVED ",req.params.id);
+
   const tour = await Tour.findByIdAndDelete(req.params.id);
+
+  console.log("TOUR GOING TO DELETE",tour);
 
   if(!tour){
     return next(new AppError("Page Not Found",404))

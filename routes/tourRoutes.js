@@ -2,6 +2,7 @@ const express = require('express');
 const router=express.Router();
 
 const tourController=require("../controllers/tourController")
+const authController = require('../controllers/authController');
 
 /*
 * TODO  tourController={getAllTours,getTour,createTour,updateTour}
@@ -20,12 +21,13 @@ router.route("/tour-stats").get(tourController.getToursStats)
 router.route("/monthly-plan/:year").get(tourController.getMonthlyPlan)
 
 router.route("/")
-  .get(tourController.aliasToTour,tourController.getAllTours)
+  // .get(authController.protect,tourController.aliasToTour,tourController.getAllTours)
+  .get(authController.protect,tourController.aliasToTour,tourController.getAllTours)
   .post(tourController.createTour)
 
 router.route("/:id")
   .patch(tourController.updateTour)
-  .delete(tourController.deleteTour)
+  .delete(authController.protect,authController.restrictTo("admin","lead-guide"),tourController.deleteTour)
   .get(tourController.getTour)
 
 module.exports=router;

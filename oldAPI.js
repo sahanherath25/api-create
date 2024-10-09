@@ -66,7 +66,7 @@ app.get("/api/v1/tours/:id",(req, res)=>{
 
   const id=parseInt(req.params.id);
 
-  console.log("Params  ", req.params);
+  // console.log("Params  ", req.params);
   //
   // console.log("Params ", current);
   // console.log("Type ", typeof current);
