@@ -128,8 +128,8 @@ tourSchema.pre(/^find/, function(next) {
 
 
 tourSchema.post(/^find/,function(docs,next){
-  console.log(`Query Took ${Date.now() - this.start} Seconds`);
-  console.log(docs);
+  // console.log(`Query Took ${Date.now() - this.start} Seconds`);
+  // console.log(docs);
   next()
 })
 
