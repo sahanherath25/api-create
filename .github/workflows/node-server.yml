@@ -4,7 +4,6 @@ on:
     type:
       - opened
     branches:
-      - master
       - 'features'
       - 'dev-**'
 
