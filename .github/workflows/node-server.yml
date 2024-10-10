@@ -6,9 +6,10 @@ on:
     branches:
       - feature
       - 'dev-**'
+      - master
   push:
-    - master
-
+    branches:
+      - feature
 jobs:
   test:
     runs-on: ubuntu-latest
