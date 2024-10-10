@@ -1,7 +1,7 @@
 name: Node Server
 on:
   pull_request:
-    type:
+    types:
       - opened
     branches:
       - feature
