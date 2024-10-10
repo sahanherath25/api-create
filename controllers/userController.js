@@ -6,9 +6,7 @@ const AppError = require('../utils/appError');
 const users = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/users.json`, 'utf-8'));
 
 const getAllUsers = catchAsync(async (req, res) => {
-
   const users = await User.find();
-
   res.status(200).json({
     status: 'success',
     statusCode: 200,
@@ -106,12 +104,14 @@ const updateMe = async (req, res, next) => {
 
 const deleteMe = catchAsync(async (req, res, next) => {
 
-    // await User.findByIdAndUpdate(req.user.id, { active: false });
-    //
-    // req.status(204).json({
-    //   status: 'success',
-    //   data: null
-    // });
+    await User.findByIdAndUpdate(req.user.id, { active: false });
+
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+
+  console.log("user data Deleted");
 
   }
 );
@@ -124,5 +124,6 @@ module.exports = {
   updateUser,
   deleteUser,
   updateMe,
+  deleteMe
 };
 

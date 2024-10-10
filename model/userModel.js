@@ -52,12 +52,12 @@ const userSchema = new mongoose.Schema({
     },
     PasswordResetToken: String,
     PasswordResetExpires: Date,
-    // active: {
-    //   type: Boolean,
-    //   default: true,
-    //   select:false
-    //
-    // }
+    active: {
+      type: Boolean,
+      default: true,
+      select:false
+
+    }
 
   }
 );
@@ -81,6 +81,15 @@ userSchema.pre('save', async function(next) {
   next();
 
 });
+
+userSchema.pre("find",function(){
+
+//  TODO only show the users who's active is not equal to false
+
+//   this.find({active:{$ne:false}})
+  this.find({active:false})
+})
+
 
 
 userSchema.pre('save', function(next) {
