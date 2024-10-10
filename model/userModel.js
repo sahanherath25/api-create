@@ -22,10 +22,10 @@ const userSchema = new mongoose.Schema({
       type: String,
       default: ''
     },
-    role:{
-      type:String,
-      enum:['user', 'guide', 'lead-guide', 'admin'],
-      default:"user"
+    role: {
+      type: String,
+      enum: ['user', 'guide', 'lead-guide', 'admin'],
+      default: 'user'
     },
     password: {
       type: String,
@@ -50,8 +50,15 @@ const userSchema = new mongoose.Schema({
     passwordChangedAt: {
       type: Date
     },
-    PasswordResetToken:String,
-    PasswordResetExpires:Date
+    PasswordResetToken: String,
+    PasswordResetExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select:false
+
+    }
+
   }
 );
 
@@ -76,12 +83,12 @@ userSchema.pre('save', async function(next) {
 });
 
 
-userSchema.pre("save",function(next){
+userSchema.pre('save', function(next) {
 //  We need to execute this only modify the password
-  if(!this.isModified("password")|| this.isNew) return next();
-  this.passwordChangedAt=Date.now()-1000
-  next()
-})
+  if (!this.isModified('password') || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
 
 //TODO Encrypting the provided Password
 
@@ -111,20 +118,20 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
 };
 
 
-userSchema.methods.createPasswordResetToken=function() {
+userSchema.methods.createPasswordResetToken = function() {
   //Getting a token
-  const resetToken=crypto.randomBytes(32).toString("hex");
+  const resetToken = crypto.randomBytes(32).toString('hex');
 
   //TODO Save the token
-  this.PasswordResetToken=crypto.createHash("Sha256").update(resetToken).digest("hex")
+  this.PasswordResetToken = crypto.createHash('Sha256').update(resetToken).digest('hex');
 
 //  TODO Set timer to expire token
 //  TODO 10 mins convert to  mili seconds
 
-  this.PasswordResetExpires=Date.now()+10*60*1000;
+  this.PasswordResetExpires = Date.now() + 10 * 60 * 1000;
 
-  return resetToken
-}
+  return resetToken;
+};
 
 //TODO Creating User Model For Schema
 const User = mongoose.model('User', userSchema);
