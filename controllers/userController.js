@@ -103,18 +103,18 @@ const updateMe = async (req, res, next) => {
   });
 
 };
-//
-// const deleteMe = catchAsync(async (req, res, next) => {
-//
-//     // await User.findByIdAndUpdate(req.user.id, { active: false });
-//     //
-//     // req.status(204).json({
-//     //   status: 'success',
-//     //   data: null
-//     // });
-//
-//   }
-// );
+
+const deleteMe = catchAsync(async (req, res, next) => {
+
+    // await User.findByIdAndUpdate(req.user.id, { active: false });
+    //
+    // req.status(204).json({
+    //   status: 'success',
+    //   data: null
+    // });
+
+  }
+);
 
 
 module.exports = {
