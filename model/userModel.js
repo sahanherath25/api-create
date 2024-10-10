@@ -52,12 +52,12 @@ const userSchema = new mongoose.Schema({
     },
     PasswordResetToken: String,
     PasswordResetExpires: Date,
-    active: {
-      type: Boolean,
-      default: true,
-      select:false
-
-    }
+    // active: {
+    //   type: Boolean,
+    //   default: true,
+    //   select:false
+    //
+    // }
 
   }
 );

@@ -95,15 +95,26 @@ const updateMe = async (req, res, next) => {
     new: true, runValidators: true
   });
 
-
   res.status(200).json({
     status: 'Success',
-    data:{
-      user:updatedUser
+    data: {
+      user: updatedUser
     }
   });
 
 };
+
+const deleteMe = catchAsync(async (req, res, next) => {
+
+    // await User.findByIdAndUpdate(req.user.id, { active: false });
+    //
+    // req.status(204).json({
+    //   status: 'success',
+    //   data: null
+    // });
+
+  }
+);
 
 
 module.exports = {
@@ -112,6 +123,6 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
-  updateMe
+  updateMe,
 };
 
