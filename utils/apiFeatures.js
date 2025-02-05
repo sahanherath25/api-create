@@ -5,13 +5,10 @@ class APIFeatures {
     this.queryString = queryString;
   }
 
-
   filter() {
-
     const queryObject = { ...this.queryString };
     // queryObject==== { limit: '5', sort: '-ratingAverage,price' }
-    // console.log("Query PAram ",queryObject);
-    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    const excludeFields = ['page',"sort",'limit', 'fields'];
     excludeFields.forEach((item) => {
       return delete queryObject[item];
     });
@@ -29,9 +26,11 @@ class APIFeatures {
 
   sort(){
 
-    if (this.query.sort) {
+    if (this.queryString.sort) {
+      // console.log("Added Query ",this.queryString.sort);
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query=this.query.sort(sortBy);
+
     } else {
       //  If there is no sort parameter
       this.query = this.query.sort('-createdAt');

@@ -2,27 +2,61 @@ const express=require("express");
 const morgan=require("morgan");
 const cors = require('cors');
 const app=express();
+const rateLimit=require("express-rate-limit");
+const helmet=require("helmet")
 
+const mongoSanitize=require("express-mongo-sanitize")
+const xss=require("xss-clean")
+const hpp=require("hpp")
 
 // Use CORS middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.static(`${__dirname}/public`));
+app.use(helmet());
+
 
 // app.use((req, res, next)=>{
 //   // TODO Handling Uncaught Exceptions
 //   console.log(sahan);
 // })
 
-
+//TODO If environemnt is development then use morgan
 if(process.env.NODE_ENV==="development"){
-  //TODO If environemnt is development then use morgan
   app.use(morgan('dev'))
 }
+
+//Creating a Rate Limiter
+const limiter=rateLimit({
+  max:100,
+  windowMs:60*60*1000,
+  message:"Too many request to the server from this IP,Please try again in 1 Hour"
+})
+
+//
+app.use("/api",limiter)
+
+//TODO Body parser -->Reading data from the body into req.body
+//TODO Limiting the data that come into body
+
+app.use(express.json({limit:"10kb"}));
+
+//TODO Data Sanitization against NoSQL Query Injection
+app.use(mongoSanitize());
+
+//TODO Data Sanitization against XSS
+app.use(xss());
+
+//Preventing Parameter Pollution
+app.use(hpp({
+  whitelist:["duration","difficulty"]
+}));
+
+
+app.use(express.static(`${__dirname}/public`));
 
 //TODO Importing Routers
 const tourRouter=require("./routes/tourRoutes")
 const userRouter=require("./routes/userRoutes")
+const reviewRouter=require("./routes/reviewRouter")
 const AppError = require('./utils/appError');
 
 const globalErrorHandler=require("./controllers/errorControllers")
@@ -30,6 +64,7 @@ const globalErrorHandler=require("./controllers/errorControllers")
 //TODO Mounting Routers
 app.use("/api/v1/tours",tourRouter);
 app.use("/api/v1/users",userRouter);
+app.use("/api/v1/reviews",reviewRouter);
 
 app.all("*",(req, res, next)=>{
   // res.status(404).json({

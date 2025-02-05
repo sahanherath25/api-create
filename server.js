@@ -30,6 +30,7 @@ mongoose.connect(DB,{
 // }).catch((reason)=>{
 //   console.error("ERROR ",reason);
 // })
+
 const app=require("./app")
 const port=process.env.PORT||3000;
 console.log("MODE ",process.env.NODE_ENV);

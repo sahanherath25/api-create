@@ -106,6 +106,9 @@ exports.getAllTours = catchAsync(async (req, res,next) => {
   // }
   //By Awaiting it will execute and return with matching results
   // With All Filtration  apply finally execute the query
+
+  console.log("QUERY BODY ",req.query);
+
   const features = new APIFeatures(Tour.find(), req.query)
     .filter()
     .sort()
@@ -127,16 +130,13 @@ exports.getAllTours = catchAsync(async (req, res,next) => {
 });
 
 exports.getTour = catchAsync(async (req, res,next) => {
+  const tour = await Tour.findById(req.params.id)
 
-  console.log('ID ', req.params.id);
-
-  const tour = await Tour.findById(req.params.id);
   //  TODO Tours.findOne({_id:req.params.id})
 
   if(!tour){
     return next(new AppError("Page Not Found",404))
   }
-
   res.status(200).json({
     status: 'success',
     statusCode: 200,
@@ -146,25 +146,9 @@ exports.getTour = catchAsync(async (req, res,next) => {
 
   });
 
-
-
   //TODO Using params we have acess to all the parameters  we define :variable
   const id = parseInt(req.params.id);
 
-  // const tour=tours.find((item)=>{
-  //   return item.id===id;
-  // })
-  //
-  // if(tour){
-  //   res.status(200).json({
-  //     status:"success",
-  //     responseTime:req.responseTime,
-  //     statusCode:200,
-  //     data:{
-  //       tour
-  //     },
-  //   })
-  // }
 });
 
 //To catch the error on Async Await Function

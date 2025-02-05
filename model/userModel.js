@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     name: {
       type: String,
       required: [true, 'User Must Enter Name'],
-      maxlength: [20, 'Name Must have less than or equal 20 Characters'],
+      maxlength: [40, 'Name Must have less than or equal 20 Characters'],
       minlength: [8, 'Name should have least 8 Characters in the Name'],
       trim: true
     },
@@ -52,12 +52,12 @@ const userSchema = new mongoose.Schema({
     },
     PasswordResetToken: String,
     PasswordResetExpires: Date,
-    // active: {
-    //   type: Boolean,
-    //   default: true,
-    //   select:false
-    //
-    // }
+    active: {
+      type: Boolean,
+      default: true,
+      select:false
+
+    }
 
   }
 );
@@ -82,6 +82,14 @@ userSchema.pre('save', async function(next) {
 
 });
 
+userSchema.pre("find",function(){
+
+//  TODO only show the users who's active is not equal to false
+  this.find({active:{$ne:false}})
+//   this.find({active:false})
+})
+
+
 
 userSchema.pre('save', function(next) {
 //  We need to execute this only modify the password
@@ -89,6 +97,8 @@ userSchema.pre('save', function(next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
+
+
 
 //TODO Encrypting the provided Password
 
