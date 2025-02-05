@@ -4,14 +4,16 @@ const validator = require('validator');
 
 // validate:[validator.isAlpha,"Tour Name must   only String not Numbers"]
 
+const User=require("./userModel")
+
 //TODO  Creating Tours Schema
 const tourSchema = new mongoose.Schema({
     name: {
       type: String,
       required: [true, 'A Tour must have a name'],
       unique: true,
-      maxlength:[40,"Tour Name Must have less than or equal 40 Characters"],
-      minlength:[10,"Tour Name should have least 10 Characters in the Name"],
+      maxlength: [40, 'Tour Name Must have less than or equal 40 Characters'],
+      minlength: [10, 'Tour Name should have least 10 Characters in the Name']
     },
 
     slug: String,
@@ -27,17 +29,17 @@ const tourSchema = new mongoose.Schema({
     difficulty: {
       type: String,
       required: [true, 'Tour Must Have Difficulty Level'],
-      enum:{
-        values:["easy","medium","difficult"],
-        message:"Values should have either  easy medium or difficult CAnnot have other Values "
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Values should have either  easy medium or difficult CAnnot have other Values '
       }
     }
     ,
     ratingsAverage: {
       type: Number,
       default: 4.5,
-      min:[1,"Ratings must be Above 1"],
-      max:[5,"Ratings must be below 5"],
+      min: [1, 'Ratings must be Above 1'],
+      max: [5, 'Ratings must be below 5']
     },
     ratingsQuantity: {
       type: Number,
@@ -48,13 +50,13 @@ const tourSchema = new mongoose.Schema({
       required: [true, 'A Tour must have a pricce']
     }
     , priceDiscount: {
-      type:Number,
-    validate:{
-        validator:function(value) {
-          return value< this.price
+      type: Number,
+      validate: {
+        validator: function(value) {
+          return value < this.price;
         },
-      message:"Discount Price Should Be Less Than {VALUE}"
-    }
+        message: 'Discount Price Should Be Less Than {VALUE}'
+      }
 
     },
     summary: {
@@ -79,7 +81,39 @@ const tourSchema = new mongoose.Schema({
     secretTour: {
       type: Boolean,
       default: false
+    },
+    startLocation: {
+      // GeoJSON required type, and coordinates
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point']
+      },
+      coordinates: [Number],
+      address: String,
+      description: String
+    },
+
+  locations:[
+    {
+      type:{
+        type:String,
+        default:"Point",
+        enum:["Point"]
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+      day:Number
     }
+  ],
+  guides:[
+    {
+      type: mongoose.Schema.ObjectId,
+      ref:"User"
+    }
+  ]
+
   },
   {
     toJSON: { virtuals: true },
@@ -102,47 +136,74 @@ tourSchema.pre('save', function(next) {
 });
 
 tourSchema.pre('save', function(next) {
-  console.log("Will About to DSave Document After 1st Pre ");
+  console.log('Will About to DSave Document After 1st Pre ');
   next();
 });
 
 //Executed after all the pre middlewares are excuted
 
-tourSchema.post("save",function(doc,next){
-  console.log("Document Finished",doc);
-  next()
-})
+tourSchema.post('save', function(doc, next) {
+  console.log('Document Finished', doc);
+  next();
+});
 
 
 //TODO QUERY MIDDLEWARES
 tourSchema.pre('find', function(next) {
-  this.find({secretTour:{$ne:true}})
+  this.find({ secretTour: { $ne: true } });
   next();
 });
 
 tourSchema.pre(/^find/, function(next) {
-  this.find({secretTour:{$ne:true}})
-  this.start=Date.now()
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
   next();
 });
 
 
-tourSchema.post(/^find/,function(docs,next){
+tourSchema.post(/^find/, function(docs, next) {
   // console.log(`Query Took ${Date.now() - this.start} Seconds`);
   // console.log(docs);
-  next()
-})
+  next();
+});
+
+tourSchema.pre(/^find/, function(next) {
+
+  this.populate({
+    path:"guides",
+    select:"-__v -passwordChangedAt -PasswordResetToken"
+  });
+
+  next();
+});
+
+
 
 
 //Aggregation middlewre
+tourSchema.pre('aggregate', function(next) {
+  console.log('Before Execute Aggregate Happens');
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log('this ', this);
+  next();
+});
 
-tourSchema.pre("aggregate",function(next){
-  console.log("Before Execute Aggregate Happens");
-   this.pipeline().unshift({$match:{secretTour:{$ne:true}}})
-  console.log("this ",this);
+
+//TODO Embedding Documents
+
+/*
+tourSchema.pre("save",async function(next) {
+
+  const guidesPromises=this.guides.map(async (userId)=>{
+    return  await User.findById(userId)
+  })
+
+  console.log("ALL GUIDES ",guidesPromises);
+  this.guides=await Promise.all(guidesPromises)
+  console.log("FINAL GUIDES ARRAY ",this.guides);
   next()
 })
-
+*/
 
 
 
